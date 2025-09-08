@@ -7,5 +7,6 @@ data class WordTranslation(
     val original: String,
     val translated: String,
     val timestamp: Timestamp,
-    val isFavourite: Boolean
+    val isFavourite: Boolean,
+    val isInHistory: Boolean
 )

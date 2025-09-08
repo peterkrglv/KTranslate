@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    //id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 }
 
 android {
@@ -50,4 +51,9 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    //local db
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    //ksp(libs.androidx.room.compiler)
 }

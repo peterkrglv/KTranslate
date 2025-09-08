@@ -6,7 +6,7 @@ import com.example.domain.models.WordTranslation
 import com.example.domain.use_cases.DeleteHistoryItemUseCase
 import com.example.domain.use_cases.FavouriteTranslationUseCase
 import com.example.domain.use_cases.GetSearchHistoryUseCase
-import com.example.domain.use_cases.SearchUseCase
+import com.example.domain.use_cases.TranslateUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class TranslateViewModel(
-    private val searchUseCase: SearchUseCase,
+    private val translateUseCase: TranslateUseCase,
     private val favouriteTranslationUseCase: FavouriteTranslationUseCase,
     private val getSearchHistoryUseCase: GetSearchHistoryUseCase,
     private val deletHistoryItemUseCase: DeleteHistoryItemUseCase
@@ -63,7 +63,7 @@ class TranslateViewModel(
         }
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                favouriteTranslationUseCase.execute(id = item.id, isFavourite = !(item.isFavourite))
+                favouriteTranslationUseCase.execute(item)
             }
         }
     }
@@ -97,29 +97,46 @@ class TranslateViewModel(
         }
         _viewState.update { it.copy(isTranslating = true) }
         viewModelScope.launch {
-            val translation = withContext(Dispatchers.IO) {
-                searchUseCase.execute(query)
-            }
-            _viewState.update { currentState ->
-                currentState.copy(
-                    currentTranslation = translation,
-                    isTranslating = false
-                )
+            withContext(Dispatchers.IO) {
+                val translation = translateUseCase.execute(query)
+                _viewState.update { currentState ->
+                    translation?.let { validTranslation ->
+                        currentState.copy(
+                            query = validTranslation.original,
+                            currentTranslation = validTranslation,
+                            isTranslating = false,
+                            translationNotFound = false
+                        )
+                    } ?: currentState.copy(
+                        isTranslating = false,
+                        translationNotFound = true
+                    )
+                }
             }
         }
     }
 
     private fun queryChanged(query: String) {
-        val currentState = _viewState.value
-        val translation = currentState.currentTranslation
-        _viewState.value = if (translation == null) {
-            currentState.copy(query = query)
-        } else {
-            val updatedHistory =
-                listOf(translation) + currentState.history.filter { it.id != translation.id }
-            currentState.copy(query = query, currentTranslation = null, history = updatedHistory)
+        _viewState.update { currentState ->
+            val currentTranslation = currentState.currentTranslation
+            currentTranslation?.let { currentTranslation ->
+                val updatedHistory = listOf(currentTranslation) +
+                        currentState.history.filter { it.id != currentTranslation.id }
+                currentState.copy(
+                    query = query,
+                    currentTranslation = null,
+                    history = updatedHistory,
+                    translationNotFound = false
+                )
+            } ?: run {
+                currentState.copy(
+                    query = query,
+                    translationNotFound = false
+                )
+            }
         }
     }
+
 
     private fun deleteHistoryItemClicked(item: WordTranslation) {
         _viewState.update { currentState ->
@@ -128,7 +145,7 @@ class TranslateViewModel(
         }
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                deletHistoryItemUseCase.execute(item.id)
+                deletHistoryItemUseCase.execute(item)
             }
         }
     }

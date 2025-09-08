@@ -1,8 +1,10 @@
 package com.example.domain.use_cases
 
-class FavouriteTranslationUseCase() {
-    suspend fun execute(id: Int, isFavourite: Boolean): Boolean {
-        println("FavouriteTranslationUseCase: id=$id, isFavourite=$isFavourite")
-        return true
+import com.example.domain.models.WordTranslation
+import com.example.domain.repositories.CacheRepository
+
+class FavouriteTranslationUseCase(private val cacheRepository: CacheRepository) {
+    suspend fun execute(item: WordTranslation) {
+        cacheRepository.favouriteTranslation(id = item.id)
     }
 }

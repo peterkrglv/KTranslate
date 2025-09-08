@@ -9,6 +9,7 @@ data class TranslateState(
     val errorMessage: String? = null,
     val history: List<WordTranslation> = emptyList(),
     val isFavourite: Boolean = false,
+    val translationNotFound: Boolean = false
 )
 
 sealed class TranslateEvent {

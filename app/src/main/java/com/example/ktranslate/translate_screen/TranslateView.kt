@@ -83,7 +83,8 @@ fun TranslateScreen(
             currentTranslation = currentTranslation,
             onQueryChanged = onQueryChanged,
             onTranslateClicked = onTranslateClicked,
-            onFavouriteClicked = onFavouriteClicked
+            onFavouriteClicked = onFavouriteClicked,
+            translationNotFound = state.translationNotFound
         )
         History(
             history = state.history,
@@ -100,6 +101,7 @@ fun TranslationCard(
     onQueryChanged: (String) -> Unit,
     onTranslateClicked: () -> Unit,
     onFavouriteClicked: () -> Unit,
+    translationNotFound: Boolean
 ) {
     val focusManager = LocalFocusManager.current
     val clipboardManager = LocalClipboardManager.current
@@ -122,15 +124,18 @@ fun TranslationCard(
                 }
             )
         )
-        if (currentTranslation != null) {
+        if (currentTranslation != null || translationNotFound) {
             OutlinedTextField(
-                value = currentTranslation.translated,
+                value = currentTranslation?.translated ?: "Nothing found",
                 onValueChange = {},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
                 readOnly = true,
+                isError = translationNotFound
             )
+        }
+        if (currentTranslation != null) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
@@ -202,7 +207,11 @@ fun HistoryItem(
             .height(48.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(modifier = Modifier.fillMaxHeight().weight(1f)) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1f)
+        ) {
             Text(text = item.original)
             Text(text = item.translated)
         }
@@ -238,7 +247,8 @@ fun TranslateViewPreview() {
                 original = "Hello",
                 translated = "Hola",
                 isFavourite = false,
-                timestamp = Timestamp(System.currentTimeMillis())
+                timestamp = Timestamp(System.currentTimeMillis()),
+                isInHistory = true
             ),
             isTranslating = false,
             errorMessage = null,
@@ -248,21 +258,24 @@ fun TranslateViewPreview() {
                     original = "Hello",
                     translated = "Hola",
                     isFavourite = false,
-                    timestamp = Timestamp(System.currentTimeMillis())
+                    timestamp = Timestamp(System.currentTimeMillis()),
+                    isInHistory = true
                 ),
                 WordTranslation(
                     id = 2,
                     original = "World",
                     translated = "Mundo",
                     isFavourite = true,
-                    timestamp = Timestamp(System.currentTimeMillis())
+                    timestamp = Timestamp(System.currentTimeMillis()),
+                    isInHistory = true
                 ),
                 WordTranslation(
                     id = 3,
                     original = "Goodbye",
                     translated = "Adiós",
                     isFavourite = false,
-                    timestamp = Timestamp(System.currentTimeMillis())
+                    timestamp = Timestamp(System.currentTimeMillis()),
+                    isInHistory = true
                 )
             ),
             isFavourite = false
