@@ -15,5 +15,7 @@ sealed class TranslateEvent {
     data class QueryChanged(val query: String) : TranslateEvent()
     data object TranslateClicked : TranslateEvent()
     data object FavouriteClicked : TranslateEvent()
-    data class FavouriteItemClicked(val item: WordTranslation) : TranslateEvent()
+    data class FavouriteHistoryItemClicked(val item: WordTranslation) : TranslateEvent()
+
+    data class DeleteHistoryItemClicked(val item: WordTranslation) : TranslateEvent()
 }

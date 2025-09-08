@@ -3,17 +3,23 @@ package com.example.ktranslate.translate_screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalFocusManager
@@ -23,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.domain.models.WordTranslation
 import com.example.ktranslate.icons.CopyIcon
+import com.example.ktranslate.icons.DeleteIcon
 import com.example.ktranslate.icons.StarFilledIcon
 import com.example.ktranslate.icons.StarIcon
 import org.koin.androidx.compose.koinViewModel
@@ -33,7 +40,6 @@ fun TranslateView(
     viewModel: TranslateViewModel = koinViewModel()
 ) {
     val viewState = viewModel.viewState.collectAsState()
-
     TranslateScreen(
         state = viewState.value,
         onQueryChanged = { viewModel.obtainEvent(TranslateEvent.QueryChanged(it)) },
@@ -41,7 +47,14 @@ fun TranslateView(
         onFavouriteClicked = { viewModel.obtainEvent(TranslateEvent.FavouriteClicked) },
         onFavouriteItemClicked = { item ->
             viewModel.obtainEvent(
-                TranslateEvent.FavouriteItemClicked(
+                TranslateEvent.FavouriteHistoryItemClicked(
+                    item
+                )
+            )
+        },
+        onDeleteHistoryItemClicked = { item ->
+            viewModel.obtainEvent(
+                TranslateEvent.DeleteHistoryItemClicked(
                     item
                 )
             )
@@ -55,78 +68,167 @@ fun TranslateScreen(
     onQueryChanged: (String) -> Unit,
     onTranslateClicked: () -> Unit,
     onFavouriteClicked: () -> Unit,
-    onFavouriteItemClicked: (item: WordTranslation) -> Unit
+    onFavouriteItemClicked: (item: WordTranslation) -> Unit,
+    onDeleteHistoryItemClicked: (WordTranslation) -> Unit
 ) {
     val currentTranslation = state.currentTranslation
-    val focusManager = LocalFocusManager.current
-    val clipboardManager = LocalClipboardManager.current
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ElevatedCard(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        TranslationCard(
+            query = state.query,
+            currentTranslation = currentTranslation,
+            onQueryChanged = onQueryChanged,
+            onTranslateClicked = onTranslateClicked,
+            onFavouriteClicked = onFavouriteClicked
+        )
+        History(
+            history = state.history,
+            onFavouriteItemClicked = onFavouriteItemClicked,
+            onDeleteHistoryItemClicked = onDeleteHistoryItemClicked
+        )
+    }
+}
+
+@Composable
+fun TranslationCard(
+    query: String,
+    currentTranslation: WordTranslation?,
+    onQueryChanged: (String) -> Unit,
+    onTranslateClicked: () -> Unit,
+    onFavouriteClicked: () -> Unit,
+) {
+    val focusManager = LocalFocusManager.current
+    val clipboardManager = LocalClipboardManager.current
+    ElevatedCard(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = onQueryChanged,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    onTranslateClicked()
+                    focusManager.clearFocus()
+                }
+            )
+        )
+        if (currentTranslation != null) {
             OutlinedTextField(
-                value = state.query,
-                onValueChange = onQueryChanged,
+                value = currentTranslation.translated,
+                onValueChange = {},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        onTranslateClicked()
-                    }
-                )
+                readOnly = true,
             )
-            if (currentTranslation != null) {
-                OutlinedTextField(
-                    value = currentTranslation.translated,
-                    onValueChange = {},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    readOnly = true,
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(
+                    onClick = {
+                        clipboardManager.setText(AnnotatedString(currentTranslation.translated))
+                    }
                 ) {
-                    IconButton(
-                        onClick = {
-                            clipboardManager.setText(AnnotatedString(currentTranslation.translated))
-                        }
-                    ) {
-                        Icon(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            imageVector = CopyIcon,
-                            contentDescription = "Copy Icon"
-                        )
-                    }
-                    IconButton(
-                        onClick = onFavouriteClicked
-                    ) {
-                        Icon(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            imageVector = if (currentTranslation.isFavourite) StarFilledIcon else StarIcon,
-                            contentDescription = if (currentTranslation.isFavourite) "Unfavourite Icon" else "Favourite Icon"
-                        )
-                    }
+                    Icon(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        imageVector = CopyIcon,
+                        contentDescription = "Copy Icon"
+                    )
+                }
+                IconButton(
+                    onClick = onFavouriteClicked
+                ) {
+                    Icon(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        imageVector = if (currentTranslation.isFavourite) StarFilledIcon else StarIcon,
+                        contentDescription = if (currentTranslation.isFavourite) "Unfavourite Icon" else "Favourite Icon"
+                    )
                 }
             }
         }
-
     }
+}
 
+@Composable
+fun History(
+    history: List<WordTranslation>,
+    onFavouriteItemClicked: (item: WordTranslation) -> Unit,
+    onDeleteHistoryItemClicked: (item: WordTranslation) -> Unit
+) {
+    Text(
+        modifier = Modifier.padding(top = 16.dp),
+        text = "History"
+    )
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 16.dp)
+    ) {
+        items(
+            items = history,
+            key = { it.id }
+        ) { item ->
+            HistoryItem(
+                item = item,
+                onFavouriteItemClicked = onFavouriteItemClicked,
+                onDeleteHistoryItemClicked = onDeleteHistoryItemClicked
+            )
+        }
+    }
 }
 
 
 @Composable
-@Preview(showSystemUi = true)
+fun HistoryItem(
+    item: WordTranslation,
+    onFavouriteItemClicked: (WordTranslation) -> Unit,
+    onDeleteHistoryItemClicked: (WordTranslation) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .height(48.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(modifier = Modifier.fillMaxHeight().weight(1f)) {
+            Text(text = item.original)
+            Text(text = item.translated)
+        }
+        IconButton(
+            onClick = { onDeleteHistoryItemClicked(item) }
+        ) {
+            Icon(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                imageVector = DeleteIcon,
+                contentDescription = "Delete Icon"
+            )
+        }
+        IconButton(
+            onClick = { onFavouriteItemClicked(item) }
+        ) {
+            Icon(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                imageVector = if (item.isFavourite) StarFilledIcon else StarIcon,
+                contentDescription = if (item.isFavourite) "Unfavourite Icon" else "Favourite Icon"
+            )
+        }
+    }
+}
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
 fun TranslateViewPreview() {
     TranslateScreen(
         state = TranslateState(
@@ -168,6 +270,7 @@ fun TranslateViewPreview() {
         onQueryChanged = {},
         onTranslateClicked = {},
         onFavouriteClicked = {},
-        onFavouriteItemClicked = {}
+        onFavouriteItemClicked = {},
+        onDeleteHistoryItemClicked = {}
     )
 }
