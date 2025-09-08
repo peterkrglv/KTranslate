@@ -22,12 +22,10 @@ fun SetUpNavHost(
     ) {
         composable(route = Screen.Translate.route) {
             TranslateView(
-                navController
             )
         }
         composable(route = Screen.Favourites.route) {
             FavouritesView(
-                navController
             )
         }
     }

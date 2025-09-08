@@ -7,19 +7,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.ktranslate.icons.ArrowBackIcon
 import com.example.ktranslate.icons.StarFilledIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopNavBar(navController: NavController, currentRoute: String? = null) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    Log.d("TopNavBar", "Current route: $currentRoute")
-    Log.d("TopNavBar", "Back stack entry: ${navBackStackEntry}")
-    CenterAlignedTopAppBar(title = { Text("KTranslate") }, navigationIcon = {
+    CenterAlignedTopAppBar(title = {
+        Text(
+            when (currentRoute) {
+                Screen.Translate.route -> "KTranslate"
+                Screen.Favourites.route -> "Favourites"
+                else -> ""
+            }
+        )
+    }, navigationIcon = {
         IconButton(
             onClick = {
                 when (currentRoute) {
