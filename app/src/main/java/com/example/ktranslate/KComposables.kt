@@ -10,8 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.ktranslate.icons.DeleteIcon
 import com.example.ktranslate.icons.StarFilledIcon
 import com.example.ktranslate.icons.StarIcon
@@ -29,7 +29,7 @@ fun KFavButton(isFavourite: Boolean, onClick: () -> Unit) {
         onClick = onClick
     ) {
         Icon(
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
             imageVector = if (isFavourite) StarFilledIcon else StarIcon,
             contentDescription = if (isFavourite) stringResource(R.string.unfavourite_icon)
             else stringResource(R.string.favourite_icon),
@@ -44,7 +44,7 @@ fun KDeleteButton(onClick: () -> Unit) {
         onClick = onClick
     ) {
         Icon(
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
             imageVector = DeleteIcon,
             contentDescription = stringResource(R.string.delete_icon)
         )

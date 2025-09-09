@@ -24,17 +24,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.domain.models.WordTranslation
 import com.example.ktranslate.KDeleteButton
 import com.example.ktranslate.KFavButton
-import com.example.ktranslate.Loading
 import com.example.ktranslate.R
 import com.example.ktranslate.icons.CopyIcon
 import org.koin.androidx.compose.koinViewModel
@@ -94,7 +96,7 @@ fun TranslateScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp),
+            .padding(dimensionResource(R.dimen.padding_small)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TranslationCard(
@@ -105,11 +107,11 @@ fun TranslateScreen(
             onFavouriteClicked = onFavouriteClicked,
             translationNotFound = state.translationNotFound
         )
-        if (state.isHistoryLoading) Loading()
-        else History(
+        History(
             history = state.history,
             onFavouriteItemClicked = onFavouriteItemClicked,
-            onDeleteHistoryItemClicked = onDeleteHistoryItemClicked
+            onDeleteHistoryItemClicked = onDeleteHistoryItemClicked,
+            isHistoryLoading = state.isHistoryLoading
         )
     }
 }
@@ -133,7 +135,7 @@ fun TranslationCard(
             onValueChange = onQueryChanged,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(dimensionResource(R.dimen.padding_small)),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
             ),
@@ -150,7 +152,7 @@ fun TranslationCard(
                 onValueChange = {},
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(dimensionResource(R.dimen.padding_small)),
                 readOnly = true,
                 isError = translationNotFound
             )
@@ -166,7 +168,7 @@ fun TranslationCard(
                     }
                 ) {
                     Icon(
-                        modifier = Modifier.padding(horizontal = 8.dp),
+                        modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small)),
                         imageVector = CopyIcon,
                         contentDescription = stringResource(R.string.copy_icon)
                     )
@@ -183,16 +185,26 @@ fun TranslationCard(
 fun History(
     history: List<WordTranslation>,
     onFavouriteItemClicked: (item: WordTranslation) -> Unit,
-    onDeleteHistoryItemClicked: (item: WordTranslation) -> Unit
+    onDeleteHistoryItemClicked: (item: WordTranslation) -> Unit,
+    isHistoryLoading: Boolean
 ) {
     Text(
-        modifier = Modifier.padding(top = 16.dp),
-        text = stringResource(R.string.history)
+        modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
+        text = stringResource(R.string.history),
+        fontSize = dimensionResource(R.dimen.font_size_header).value.sp,
+        fontWeight = FontWeight.SemiBold
     )
+    if (history.isEmpty() && !isHistoryLoading) {
+        Text(
+            text = stringResource(R.string.nothing_here),
+            fontSize = dimensionResource(R.dimen.font_size_body_big).value.sp,
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))
+        )
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 16.dp)
+            .padding()
     ) {
         items(
             items = history,
@@ -217,7 +229,7 @@ fun HistoryItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(dimensionResource(R.dimen.padding_small))
             .height(48.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -226,8 +238,14 @@ fun HistoryItem(
                 .fillMaxHeight()
                 .weight(1f)
         ) {
-            Text(text = item.original)
-            Text(text = item.translated)
+            Text(
+                text = item.original,
+                fontSize = dimensionResource(R.dimen.font_size_body_big).value.sp
+            )
+            Text(
+                text = item.translated,
+                fontSize = dimensionResource(R.dimen.font_size_body_medium).value.sp
+            )
         }
         KDeleteButton {
             onDeleteHistoryItemClicked(item)

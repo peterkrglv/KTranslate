@@ -15,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.domain.models.WordTranslation
 import com.example.ktranslate.KFavButton
 import com.example.ktranslate.Loading
@@ -47,7 +49,7 @@ fun FavouritesScreen(state: FavouritesState, onUnfavouriteItem: (WordTranslation
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp),
+            .padding(dimensionResource(R.dimen.padding_small)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (state.loadingFavourites) {
@@ -72,10 +74,16 @@ fun FavouritesScreen(state: FavouritesState, onUnfavouriteItem: (WordTranslation
 @Composable
 fun FavouritesPlaceHolder() {
     Text(
-        text = stringResource(R.string.nothing_here)
+        text = stringResource(R.string.nothing_here),
+        fontSize = dimensionResource(R.dimen.font_size_body_big).value.sp,
+        modifier = Modifier.padding(
+            dimensionResource(R.dimen.padding_small)
+        )
     )
     Text(
-        text = stringResource(R.string.to_add_favourites_return_to_the_main_screen_and_favourite_any_translations_from_your_history)
+        text = stringResource(R.string.to_add_favourites_return_to_the_main_screen_and_favourite_any_translations_from_your_history),
+        fontSize = dimensionResource(R.dimen.font_size_body_medium).value.sp,
+        modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
     )
 }
 
@@ -84,7 +92,7 @@ fun FavouriteItem(item: WordTranslation, onUnfavouriteClick: (WordTranslation) -
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(dimensionResource(R.dimen.padding_small))
             .height(48.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -93,8 +101,14 @@ fun FavouriteItem(item: WordTranslation, onUnfavouriteClick: (WordTranslation) -
                 .fillMaxHeight()
                 .weight(1f)
         ) {
-            Text(text = item.original)
-            Text(text = item.translated)
+            Text(
+                text = item.original,
+                fontSize = dimensionResource(R.dimen.font_size_body_big).value.sp
+            )
+            Text(
+                text = item.translated,
+                fontSize = dimensionResource(R.dimen.font_size_body_medium).value.sp
+            )
         }
         KFavButton(
             isFavourite = item.isFavourite
