@@ -34,7 +34,6 @@ fun TopNavBar(navController: NavController, currentRoute: String? = null) {
                                 saveState = true
                                 inclusive = false
                             }
-                            restoreState = true
                         }
                     }
 
@@ -43,7 +42,6 @@ fun TopNavBar(navController: NavController, currentRoute: String? = null) {
                         navController.navigate(Screen.Translate.route) {
                             launchSingleTop = true
                             popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
                                 inclusive = false
                             }
                             restoreState = true
