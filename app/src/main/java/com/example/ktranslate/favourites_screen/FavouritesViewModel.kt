@@ -16,7 +16,7 @@ class FavouritesViewModel(
     private val getFavouritesUseCase: GetFavouritesUseCase,
     private val favouriteTranslationUseCase: FavouriteTranslationUseCase
 ) : ViewModel() {
-    private val _viewState = MutableStateFlow<FavouritesState>(FavouritesState())
+    private val _viewState = MutableStateFlow(FavouritesState())
     val viewState: StateFlow<FavouritesState>
         get() = _viewState
 
@@ -43,7 +43,6 @@ class FavouritesViewModel(
     }
 
     private fun unfavouriteItem(item: WordTranslation) {
-        val currentState = _viewState.value
         _viewState.update { currentState ->
             val updatedFavourites = currentState.favourites.filter { it.id != item.id }
             currentState.copy(favourites = updatedFavourites)

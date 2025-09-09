@@ -1,7 +1,7 @@
 package com.example.ktranslate
 
 import com.example.data.dataModule
-import com.example.domain.use_cases.DeleteHistoryItemUseCase
+import com.example.domain.use_cases.DeleteTranslationFromHistoryUseCase
 import com.example.domain.use_cases.FavouriteTranslationUseCase
 import com.example.domain.use_cases.GetFavouritesUseCase
 import com.example.domain.use_cases.GetHistoryUseCase
@@ -15,7 +15,7 @@ val domainModule = module {
     factory<TranslateUseCase> { TranslateUseCase(get(), get()) }
     factory<FavouriteTranslationUseCase> { FavouriteTranslationUseCase(get()) }
     factory<GetHistoryUseCase> { GetHistoryUseCase(get()) }
-    factory<DeleteHistoryItemUseCase> { DeleteHistoryItemUseCase(get()) }
+    factory<DeleteTranslationFromHistoryUseCase> { DeleteTranslationFromHistoryUseCase(get()) }
     factory<GetFavouritesUseCase> { GetFavouritesUseCase(get()) }
 }
 

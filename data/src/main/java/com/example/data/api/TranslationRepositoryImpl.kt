@@ -15,10 +15,6 @@ class TranslationRepositoryImpl(
                 val meaning = response[0].meanings
                 if (meaning.isNotEmpty()) {
                     val translatedWord = meaning[0].translation.text
-                    Log.d(
-                        "TranslationRepository",
-                        "Translated '${response[0].text}' to '$translatedWord'"
-                    )
                     return WordTranslation(
                         id = response[0].id,
                         original = response[0].text,

@@ -1,6 +1,5 @@
 package com.example.ktranslate.translate_screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,12 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.domain.models.WordTranslation
 import com.example.ktranslate.Loading
 import com.example.ktranslate.icons.CopyIcon
@@ -204,7 +203,6 @@ fun History(
             items = history,
             key = { it.id }
         ) { item ->
-            Log.d("History", "Rendering item: $item")
             HistoryItem(
                 item = item,
                 onFavouriteItemClicked = onFavouriteItemClicked,

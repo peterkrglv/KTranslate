@@ -3,7 +3,7 @@ package com.example.ktranslate.translate_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.models.WordTranslation
-import com.example.domain.use_cases.DeleteHistoryItemUseCase
+import com.example.domain.use_cases.DeleteTranslationFromHistoryUseCase
 import com.example.domain.use_cases.FavouriteTranslationUseCase
 import com.example.domain.use_cases.GetHistoryUseCase
 import com.example.domain.use_cases.TranslateUseCase
@@ -18,9 +18,9 @@ class TranslateViewModel(
     private val translateUseCase: TranslateUseCase,
     private val favouriteTranslationUseCase: FavouriteTranslationUseCase,
     private val getHistoryUseCase: GetHistoryUseCase,
-    private val deletHistoryItemUseCase: DeleteHistoryItemUseCase
+    private val deletHistoryItemUseCase: DeleteTranslationFromHistoryUseCase
 ) : ViewModel() {
-    private val _viewState = MutableStateFlow<TranslateState>(TranslateState())
+    private val _viewState = MutableStateFlow(TranslateState())
     val viewState: StateFlow<TranslateState>
         get() = _viewState
 
@@ -61,7 +61,6 @@ class TranslateViewModel(
     }
 
     private fun favouriteSearchItemClicked(item: WordTranslation) {
-        val currentState = _viewState.value
         _viewState.update { currentState ->
             val updatedHistory = currentState.history.map {
                 if (it.id == item.id) {

@@ -42,7 +42,6 @@ class CacheRepositoryImpl(private val dao: WordTranslationDao) : CacheRepository
 
     override suspend fun getHistory(): List<WordTranslation> {
         val res = dao.getHistoryItems().map { it.toModel() }
-        Log.d("CacheRepo", "Fetched history: $res")
         return res
     }
 
@@ -72,7 +71,6 @@ class CacheRepositoryImpl(private val dao: WordTranslationDao) : CacheRepository
 
     override suspend fun getFavourites(): List<WordTranslation> {
         val res = dao.getFavouriteItems().map { it.toModel() }
-        Log.d("CacheRepo", "Fetched favourites: $res")
         return res
     }
 }

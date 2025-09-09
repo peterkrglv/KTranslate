@@ -11,6 +11,6 @@ data class MeaningResponse(
     val translation: TranslationTextResponse
 )
 
-data class TranslationTextResponse (
+data class TranslationTextResponse(
     val text: String
 )
