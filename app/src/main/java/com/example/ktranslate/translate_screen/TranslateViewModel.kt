@@ -95,7 +95,7 @@ class TranslateViewModel(
             }
             currentState.copy(
                 currentTranslation = updatedTranslation,
-                history = updatedHistory
+                history = updatedHistory,
             )
         }
         viewModelScope.launch {

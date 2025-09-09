@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,11 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.domain.models.WordTranslation
+import com.example.ktranslate.KDeleteButton
+import com.example.ktranslate.KFavButton
 import com.example.ktranslate.Loading
+import com.example.ktranslate.R
 import com.example.ktranslate.icons.CopyIcon
-import com.example.ktranslate.icons.DeleteIcon
-import com.example.ktranslate.icons.StarFilledIcon
-import com.example.ktranslate.icons.StarIcon
 import org.koin.androidx.compose.koinViewModel
 import java.sql.Timestamp
 
@@ -145,7 +146,7 @@ fun TranslationCard(
         )
         if (currentTranslation != null || translationNotFound) {
             OutlinedTextField(
-                value = currentTranslation?.translated ?: "Nothing found",
+                value = currentTranslation?.translated ?: stringResource(R.string.nothing_found),
                 onValueChange = {},
                 modifier = Modifier
                     .fillMaxWidth()
@@ -167,17 +168,11 @@ fun TranslationCard(
                     Icon(
                         modifier = Modifier.padding(horizontal = 8.dp),
                         imageVector = CopyIcon,
-                        contentDescription = "Copy Icon"
+                        contentDescription = stringResource(R.string.copy_icon)
                     )
                 }
-                IconButton(
-                    onClick = onFavouriteClicked
-                ) {
-                    Icon(
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        imageVector = if (currentTranslation.isFavourite) StarFilledIcon else StarIcon,
-                        contentDescription = if (currentTranslation.isFavourite) "Unfavourite Icon" else "Favourite Icon"
-                    )
+                KFavButton(isFavourite = currentTranslation.isFavourite) {
+                    onFavouriteClicked()
                 }
             }
         }
@@ -192,7 +187,7 @@ fun History(
 ) {
     Text(
         modifier = Modifier.padding(top = 16.dp),
-        text = "History"
+        text = stringResource(R.string.history)
     )
     LazyColumn(
         modifier = Modifier
@@ -234,23 +229,11 @@ fun HistoryItem(
             Text(text = item.original)
             Text(text = item.translated)
         }
-        IconButton(
-            onClick = { onDeleteHistoryItemClicked(item) }
-        ) {
-            Icon(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                imageVector = DeleteIcon,
-                contentDescription = "Delete Icon"
-            )
+        KDeleteButton {
+            onDeleteHistoryItemClicked(item)
         }
-        IconButton(
-            onClick = { onFavouriteItemClicked(item) }
-        ) {
-            Icon(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                imageVector = if (item.isFavourite) StarFilledIcon else StarIcon,
-                contentDescription = if (item.isFavourite) "Unfavourite Icon" else "Favourite Icon"
-            )
+        KFavButton(item.isFavourite) {
+            onFavouriteItemClicked(item)
         }
     }
 }

@@ -10,19 +10,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.domain.models.WordTranslation
+import com.example.ktranslate.KFavButton
 import com.example.ktranslate.Loading
-import com.example.ktranslate.icons.StarFilledIcon
-import com.example.ktranslate.icons.StarIcon
+import com.example.ktranslate.R
 import org.koin.androidx.compose.koinViewModel
 import java.sql.Timestamp
 
@@ -73,7 +72,10 @@ fun FavouritesScreen(state: FavouritesState, onUnfavouriteItem: (WordTranslation
 @Composable
 fun FavouritesPlaceHolder() {
     Text(
-        text = "You don't have any favourite translations. To add favourites return to the main screen and favourite any translations from your history"
+        text = stringResource(R.string.nothing_here)
+    )
+    Text(
+        text = stringResource(R.string.to_add_favourites_return_to_the_main_screen_and_favourite_any_translations_from_your_history)
     )
 }
 
@@ -94,14 +96,10 @@ fun FavouriteItem(item: WordTranslation, onUnfavouriteClick: (WordTranslation) -
             Text(text = item.original)
             Text(text = item.translated)
         }
-        IconButton(
-            onClick = { onUnfavouriteClick(item) }
+        KFavButton(
+            isFavourite = item.isFavourite
         ) {
-            Icon(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                imageVector = if (item.isFavourite) StarFilledIcon else StarIcon,
-                contentDescription = if (item.isFavourite) "Unfavourite Icon" else "Favourite Icon"
-            )
+            onUnfavouriteClick(item)
         }
     }
 }

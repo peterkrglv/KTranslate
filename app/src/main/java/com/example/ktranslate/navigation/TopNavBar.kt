@@ -6,7 +6,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.example.ktranslate.R
 import com.example.ktranslate.icons.ArrowBackIcon
 import com.example.ktranslate.icons.StarFilledIcon
 
@@ -16,8 +18,8 @@ fun TopNavBar(navController: NavController, currentRoute: String? = null) {
     CenterAlignedTopAppBar(title = {
         Text(
             when (currentRoute) {
-                Screen.Translate.route -> "KTranslate"
-                Screen.Favourites.route -> "Favourites"
+                Screen.Translate.route -> stringResource(R.string.app_name)
+                Screen.Favourites.route -> stringResource(R.string.favourites_title)
                 else -> ""
             }
         )
@@ -48,7 +50,8 @@ fun TopNavBar(navController: NavController, currentRoute: String? = null) {
             }) {
             Icon(
                 imageVector = if (currentRoute == Screen.Translate.route) StarFilledIcon else ArrowBackIcon,
-                contentDescription = if (currentRoute == Screen.Translate.route) "Star Favourites Icon" else "Back arrow Icon"
+                contentDescription = if (currentRoute == Screen.Translate.route) stringResource(R.string.favourites_icon)
+                else stringResource(R.string.back_arrow_icon)
             )
         }
     })
