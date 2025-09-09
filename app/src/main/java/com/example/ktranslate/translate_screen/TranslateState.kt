@@ -9,7 +9,8 @@ data class TranslateState(
     val errorMessage: String? = null,
     val history: List<WordTranslation> = emptyList(),
     val isFavourite: Boolean = false,
-    val translationNotFound: Boolean = false
+    val translationNotFound: Boolean = false,
+    val isHistoryLoading: Boolean = true
 )
 
 sealed class TranslateEvent {
@@ -19,4 +20,6 @@ sealed class TranslateEvent {
     data class FavouriteHistoryItemClicked(val item: WordTranslation) : TranslateEvent()
 
     data class DeleteHistoryItemClicked(val item: WordTranslation) : TranslateEvent()
+
+    data object RenewHistory : TranslateEvent()
 }

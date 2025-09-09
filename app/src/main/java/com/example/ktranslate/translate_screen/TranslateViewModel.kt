@@ -35,6 +35,7 @@ class TranslateViewModel(
             is TranslateEvent.FavouriteClicked -> favouriteClicked()
             is TranslateEvent.FavouriteHistoryItemClicked -> favouriteSearchItemClicked(event.item)
             is TranslateEvent.DeleteHistoryItemClicked -> deleteHistoryItemClicked(event.item)
+            TranslateEvent.RenewHistory -> renewHistory()
         }
     }
 
@@ -44,9 +45,19 @@ class TranslateViewModel(
                 getHistoryUseCase.execute()
             }
             _viewState.update { currentState ->
-                currentState.copy(history = history)
+                currentState.copy(history = history, isHistoryLoading = false)
             }
         }
+    }
+
+    private fun renewHistory() {
+        _viewState.update {
+            _viewState.value.copy(
+                isHistoryLoading = true,
+                history = emptyList()
+            )
+        }
+        getSearchHistory()
     }
 
     private fun favouriteSearchItemClicked(item: WordTranslation) {

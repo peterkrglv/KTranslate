@@ -19,16 +19,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleEventObserver
 import com.example.domain.models.WordTranslation
+import com.example.ktranslate.Loading
 import com.example.ktranslate.icons.CopyIcon
 import com.example.ktranslate.icons.DeleteIcon
 import com.example.ktranslate.icons.StarFilledIcon
@@ -41,6 +45,20 @@ fun TranslateView(
     viewModel: TranslateViewModel = koinViewModel()
 ) {
     val viewState = viewModel.viewState.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                viewModel.obtainEvent(TranslateEvent.RenewHistory)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     TranslateScreen(
         state = viewState.value,
         onQueryChanged = { viewModel.obtainEvent(TranslateEvent.QueryChanged(it)) },
@@ -87,7 +105,8 @@ fun TranslateScreen(
             onFavouriteClicked = onFavouriteClicked,
             translationNotFound = state.translationNotFound
         )
-        History(
+        if (state.isHistoryLoading) Loading()
+        else History(
             history = state.history,
             onFavouriteItemClicked = onFavouriteItemClicked,
             onDeleteHistoryItemClicked = onDeleteHistoryItemClicked
