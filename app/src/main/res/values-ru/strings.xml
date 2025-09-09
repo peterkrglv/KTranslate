@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KTranslate</string>
+    <string name="favourites_title">Избранное</string>
+    <string name="favourites_icon">Иконка избранного</string>
+    <string name="back_arrow_icon">Иконка навигации назад</string>
+    <string name="nothing_found">Перевод не найден</string>
+    <string name="copy_icon">Иконка копирования</string>
+    <string name="history">История</string>
+    <string name="nothing_here">Пока что тут ничего нет</string>
+    <string name="to_add_favourites_return_to_the_main_screen_and_favourite_any_translations_from_your_history">Чтобы добавить перевод в избранное, вернитесь к истории переводов и нажмите на иконку избранного у нужного перевода</string>
+    <string name="favourite_icon">Иконка избранного</string>
+    <string name="unfavourite_icon">Иконка удаления из избранного</string>
+    <string name="delete_icon">Иконка удаления</string>
+</resources>
