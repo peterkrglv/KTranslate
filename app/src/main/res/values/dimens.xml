@@ -2,7 +2,7 @@
 <resources>
     <dimen name="padding_small">8dp</dimen>
     <dimen name="padding_medium">16dp</dimen>
-    <dimen name="font_size_body_medium">16sp</dimen>
-    <dimen name="font_size_body_big">16sp</dimen>
-    <dimen name="font_size_header">20sp</dimen>
+    <dimen name="font_size_body_medium">14sp</dimen>
+    <dimen name="font_size_body_big">18sp</dimen>
+    <dimen name="font_size_header_small">20sp</dimen>
 </resources>

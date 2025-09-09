@@ -191,8 +191,7 @@ fun History(
     Text(
         modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)),
         text = stringResource(R.string.history),
-        fontSize = dimensionResource(R.dimen.font_size_header).value.sp,
-        fontWeight = FontWeight.SemiBold
+        fontSize = dimensionResource(R.dimen.font_size_header_small).value.sp
     )
     if (history.isEmpty() && !isHistoryLoading) {
         Text(
