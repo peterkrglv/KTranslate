@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    //id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+    alias(libs.plugins.devtools.ksp)
 }
 
 android {
@@ -55,5 +55,5 @@ dependencies {
     //local db
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    //ksp(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
 }

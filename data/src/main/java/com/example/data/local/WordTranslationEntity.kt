@@ -1,14 +1,50 @@
 package com.example.data.local
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.domain.models.WordTranslation
+import java.sql.Timestamp
 
-@Entity(tableName = "history_table") // Указываем имя таблицы
-data class WordTranslation(
-    @PrimaryKey(autoGenerate = true) // Первичный ключ, генерируется автоматически
-    val id: Int = 0, // 0 - значение по умолчанию для Room, чтобы он мог сгенерировать id
-    val original: String,         // Оригинальное слово/фраза
-    val translated: String,       // Переведенное слово/фраза
-    var isFavourite: Boolean = false, // Состояние "в избранном"
-    var timestamp: Long             // Время сохранения/обновления (в миллисекундах)
+@Entity(tableName = "word_translations")
+data class WordTranslationEntity(
+    @PrimaryKey()
+    val id: Int,
+
+    @ColumnInfo(name = "original_word")
+    val original: String,
+
+    @ColumnInfo(name = "translated_word")
+    val translated: String,
+
+    @ColumnInfo(name = "timestamp_millis")
+    val timestamp: Timestamp,
+
+    @ColumnInfo(name = "is_favourite")
+    val isFavourite: Boolean = false,
+
+    @ColumnInfo(name = "is_in_history")
+    val isInHistory: Boolean = true
 )
+
+fun WordTranslationEntity.toModel(): WordTranslation {
+    return WordTranslation(
+        id = this.id,
+        original = this.original,
+        translated = this.translated,
+        timestamp = this.timestamp,
+        isFavourite = this.isFavourite,
+        isInHistory = this.isInHistory
+    )
+}
+
+fun WordTranslation.toEntity(): WordTranslationEntity {
+    return WordTranslationEntity(
+        id = this.id,
+        original = this.original,
+        translated = this.translated,
+        timestamp = this.timestamp,
+        isFavourite = this.isFavourite,
+        isInHistory = this.isInHistory
+    )
+}

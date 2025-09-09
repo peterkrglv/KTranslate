@@ -5,6 +5,7 @@ import com.example.domain.repositories.CacheRepository
 
 class FavouriteTranslationUseCase(private val cacheRepository: CacheRepository) {
     suspend fun execute(item: WordTranslation) {
-        cacheRepository.favouriteTranslation(id = item.id)
+        val translation = item.copy(isFavourite = !item.isFavourite)
+        cacheRepository.favouriteTranslation(translation)
     }
 }

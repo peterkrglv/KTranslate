@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.models.WordTranslation
 import com.example.domain.use_cases.DeleteHistoryItemUseCase
 import com.example.domain.use_cases.FavouriteTranslationUseCase
-import com.example.domain.use_cases.GetSearchHistoryUseCase
+import com.example.domain.use_cases.GetHistoryUseCase
 import com.example.domain.use_cases.TranslateUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 class TranslateViewModel(
     private val translateUseCase: TranslateUseCase,
     private val favouriteTranslationUseCase: FavouriteTranslationUseCase,
-    private val getSearchHistoryUseCase: GetSearchHistoryUseCase,
+    private val getHistoryUseCase: GetHistoryUseCase,
     private val deletHistoryItemUseCase: DeleteHistoryItemUseCase
 ) : ViewModel() {
     private val _viewState = MutableStateFlow<TranslateState>(TranslateState())
@@ -41,7 +41,7 @@ class TranslateViewModel(
     private fun getSearchHistory() {
         viewModelScope.launch {
             val history = withContext(Dispatchers.IO) {
-                getSearchHistoryUseCase.execute()
+                getHistoryUseCase.execute()
             }
             _viewState.update { currentState ->
                 currentState.copy(history = history)
@@ -87,6 +87,11 @@ class TranslateViewModel(
                 currentTranslation = updatedTranslation,
                 history = updatedHistory
             )
+        }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                favouriteTranslationUseCase.execute(currentTranslation)
+            }
         }
     }
 

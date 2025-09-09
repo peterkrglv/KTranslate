@@ -1,5 +1,6 @@
 package com.example.ktranslate.translate_screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -184,6 +185,7 @@ fun History(
             items = history,
             key = { it.id }
         ) { item ->
+            Log.d("History", "Rendering item: $item")
             HistoryItem(
                 item = item,
                 onFavouriteItemClicked = onFavouriteItemClicked,

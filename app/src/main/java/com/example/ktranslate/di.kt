@@ -3,16 +3,16 @@ package com.example.ktranslate
 import com.example.data.dataModule
 import com.example.domain.use_cases.DeleteHistoryItemUseCase
 import com.example.domain.use_cases.FavouriteTranslationUseCase
-import com.example.domain.use_cases.GetSearchHistoryUseCase
+import com.example.domain.use_cases.GetHistoryUseCase
 import com.example.domain.use_cases.TranslateUseCase
 import com.example.ktranslate.translate_screen.TranslateViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val domainModule = module {
-    factory<TranslateUseCase> { TranslateUseCase(get()) }
+    factory<TranslateUseCase> { TranslateUseCase(get(), get()) }
     factory<FavouriteTranslationUseCase> { FavouriteTranslationUseCase(get()) }
-    factory<GetSearchHistoryUseCase> { GetSearchHistoryUseCase(get()) }
+    factory<GetHistoryUseCase> { GetHistoryUseCase(get()) }
     factory<DeleteHistoryItemUseCase> { DeleteHistoryItemUseCase(get()) }
 }
 
