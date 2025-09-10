@@ -20,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +49,9 @@ fun TranslateView(
     viewModel: TranslateViewModel = koinViewModel()
 ) {
     val viewState = viewModel.viewState.collectAsState()
+    val viewAction = viewModel.viewAction.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -59,6 +62,29 @@ fun TranslateView(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    LaunchedEffect(viewAction.value) {
+        when (val action = viewAction.value) {
+            is TranslateAction.ConnectionLost -> {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.no_internet_connection), Toast.LENGTH_LONG
+                ).show()
+                viewModel.clearAction()
+            }
+
+            is TranslateAction.ConnectionAvailable -> {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.internet_connection_restored), Toast.LENGTH_LONG
+                )
+                    .show()
+                viewModel.clearAction()
+            }
+
+            null -> {}
         }
     }
 

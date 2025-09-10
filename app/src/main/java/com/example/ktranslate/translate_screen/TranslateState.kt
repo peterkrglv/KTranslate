@@ -23,3 +23,8 @@ sealed class TranslateEvent {
 
     data object RenewHistory : TranslateEvent()
 }
+
+sealed class TranslateAction {
+    data object ConnectionLost : TranslateAction()
+    data object ConnectionAvailable : TranslateAction()
+}

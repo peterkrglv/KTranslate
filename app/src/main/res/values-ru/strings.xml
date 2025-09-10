@@ -12,4 +12,6 @@
     <string name="unfavourite_icon">Иконка удаления из избранного</string>
     <string name="delete_icon">Иконка удаления</string>
     <string name="the_translation_has_been_copied_to_clipboard">Перевод был скопирован в буфер обмена</string>
+    <string name="no_internet_connection">Нет подключения к интернету. Перевод не работает</string>
+    <string name="internet_connection_restored">Подключение к интернету восстановлено</string>
 </resources>

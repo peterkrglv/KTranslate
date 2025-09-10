@@ -12,4 +12,6 @@
     <string name="unfavourite_icon">Unfavourite Icon</string>
     <string name="delete_icon">Delete Icon</string>
     <string name="the_translation_has_been_copied_to_clipboard">The translation has been copied to clipboard</string>
+    <string name="no_internet_connection">No internet connection. Translation won\'t work</string>
+    <string name="internet_connection_restored">Internet connection has been restored</string>
 </resources>

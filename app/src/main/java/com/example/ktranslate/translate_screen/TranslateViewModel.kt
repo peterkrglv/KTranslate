@@ -1,5 +1,6 @@
 package com.example.ktranslate.translate_screen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.models.WordTranslation
@@ -7,9 +8,13 @@ import com.example.domain.use_cases.DeleteTranslationFromHistoryUseCase
 import com.example.domain.use_cases.FavouriteTranslationUseCase
 import com.example.domain.use_cases.GetHistoryUseCase
 import com.example.domain.use_cases.TranslateUseCase
+import com.example.ktranslate.ConnectivityObserver
+import com.example.ktranslate.NetworkStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -18,14 +23,22 @@ class TranslateViewModel(
     private val translateUseCase: TranslateUseCase,
     private val favouriteTranslationUseCase: FavouriteTranslationUseCase,
     private val getHistoryUseCase: GetHistoryUseCase,
-    private val deletHistoryItemUseCase: DeleteTranslationFromHistoryUseCase
+    private val deletHistoryItemUseCase: DeleteTranslationFromHistoryUseCase,
+    private val connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(TranslateState())
     val viewState: StateFlow<TranslateState>
         get() = _viewState
 
+    private val _viewAction = MutableStateFlow<TranslateAction?>(null)
+    val viewAction: StateFlow<TranslateAction?>
+        get() = _viewAction
+
+    private var lastNetworkStatus: NetworkStatus? = null
+
     init {
         getSearchHistory()
+        observeNetworkStatus()
     }
 
     fun obtainEvent(event: TranslateEvent) {
@@ -39,6 +52,10 @@ class TranslateViewModel(
         }
     }
 
+    fun clearAction() {
+        _viewAction.value = null
+    }
+
     private fun getSearchHistory() {
         viewModelScope.launch {
             val history = withContext(Dispatchers.IO) {
@@ -48,6 +65,27 @@ class TranslateViewModel(
                 currentState.copy(history = history, isHistoryLoading = false)
             }
         }
+    }
+
+    private fun observeNetworkStatus() {
+        connectivityObserver.observe()
+            .onEach { status: NetworkStatus ->
+                Log.d("TranslateViewModel", "Network status: $status")
+                when (status) {
+                    NetworkStatus.Available -> {
+                        if (lastNetworkStatus == NetworkStatus.Unavailable) {
+                            _viewAction.value = TranslateAction.ConnectionAvailable
+                        }
+                    }
+                    NetworkStatus.Unavailable -> {
+                        if (lastNetworkStatus != NetworkStatus.Unavailable) {
+                            _viewAction.value = TranslateAction.ConnectionLost
+                        }
+                    }
+                }
+                lastNetworkStatus = status
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun renewHistory() {

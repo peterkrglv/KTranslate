@@ -8,6 +8,7 @@ import com.example.domain.use_cases.GetHistoryUseCase
 import com.example.domain.use_cases.TranslateUseCase
 import com.example.ktranslate.favourites_screen.FavouritesViewModel
 import com.example.ktranslate.translate_screen.TranslateViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -20,7 +21,8 @@ val domainModule = module {
 }
 
 val appModule = module {
-    viewModel<TranslateViewModel> { TranslateViewModel(get(), get(), get(), get()) }
+    single<ConnectivityObserver> { NetworkConnectivityObserver(androidContext()) }
+    viewModel<TranslateViewModel> { TranslateViewModel(get(), get(), get(), get(), get()) }
     viewModel<FavouritesViewModel> { FavouritesViewModel(get(), get()) }
 }
 
