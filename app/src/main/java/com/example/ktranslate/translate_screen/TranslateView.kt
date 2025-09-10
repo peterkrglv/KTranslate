@@ -1,5 +1,6 @@
 package com.example.ktranslate.translate_screen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,11 +24,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -130,6 +131,7 @@ fun TranslationCard(
     ElevatedCard(
         modifier = Modifier.fillMaxWidth()
     ) {
+        val context = LocalContext.current
         OutlinedTextField(
             value = query,
             onValueChange = onQueryChanged,
@@ -165,6 +167,11 @@ fun TranslationCard(
                 IconButton(
                     onClick = {
                         clipboardManager.setText(AnnotatedString(currentTranslation.translated))
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.the_translation_has_been_copied_to_clipboard),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 ) {
                     Icon(

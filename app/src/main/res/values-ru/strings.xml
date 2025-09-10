@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">KTranslate</string>
     <string name="favourites_title">Избранное</string>
     <string name="favourites_icon">Иконка избранного</string>
     <string name="back_arrow_icon">Иконка навигации назад</string>
@@ -12,4 +11,5 @@
     <string name="favourite_icon">Иконка избранного</string>
     <string name="unfavourite_icon">Иконка удаления из избранного</string>
     <string name="delete_icon">Иконка удаления</string>
+    <string name="the_translation_has_been_copied_to_clipboard">Перевод был скопирован в буфер обмена</string>
 </resources>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KTranslate</string>
+    <string name="app_name" translatable="false">KTranslate</string>
     <string name="favourites_title">Favourites</string>
     <string name="favourites_icon">Favourites Icon</string>
     <string name="back_arrow_icon">Back arrow icon</string>
@@ -11,4 +11,5 @@
     <string name="favourite_icon">Favourite Icon</string>
     <string name="unfavourite_icon">Unfavourite Icon</string>
     <string name="delete_icon">Delete Icon</string>
+    <string name="the_translation_has_been_copied_to_clipboard">The translation has been copied to clipboard</string>
 </resources>

@@ -9,7 +9,7 @@ class TranslateUseCase(
     private val cacheRepository: CacheRepository
 ) {
     suspend fun execute(query: String): WordTranslation? {
-        val cachedTranslation = cacheRepository.getTranslation(query)
+        val cachedTranslation = cacheRepository.getTranslation(query.lowercase())
         if (cachedTranslation != null) {
             return cachedTranslation
         }

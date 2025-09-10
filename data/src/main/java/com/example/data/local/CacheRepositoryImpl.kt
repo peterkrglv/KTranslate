@@ -41,8 +41,7 @@ class CacheRepositoryImpl(private val dao: WordTranslationDao) : CacheRepository
     }
 
     override suspend fun getHistory(): List<WordTranslation> {
-        val res = dao.getHistoryItems().map { it.toModel() }
-        return res
+        return dao.getHistoryItems().map { it.toModel() }
     }
 
     override suspend fun deleteFromHistory(id: Int): Boolean {
@@ -68,9 +67,7 @@ class CacheRepositoryImpl(private val dao: WordTranslationDao) : CacheRepository
         }
     }
 
-
     override suspend fun getFavourites(): List<WordTranslation> {
-        val res = dao.getFavouriteItems().map { it.toModel() }
-        return res
+        return dao.getFavouriteItems().map { it.toModel() }
     }
 }
